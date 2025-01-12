@@ -1,6 +1,5 @@
 #!/bin/sh
 
-# Defines executable_name, sdk_manager and log
 source $(dirname $0)/lib/common.sh
 source $(dirname $0)/lib/tool_versions.sh
 
