@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Defines executable_name and log
+# Defines executable_name, sdk_manager and log
 source $(dirname $0)/lib/common.sh
 
 BUNDLETOOL_VERSION=1.17.2
@@ -26,8 +26,6 @@ else
   log "Copying cmdline-tools to android/cmdline-tools"
   cp -r $path_to_cmdline_tools android/cmdline-tools
 fi
-
-sdkmanager="./android/cmdline-tools/latest/bin/sdkmanager"
 
 if [ -d android/licenses ]; then
   log "licenses already accepted, skipping"
