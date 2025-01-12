@@ -10,6 +10,7 @@ if [ ! -f ./dragonruby ]; then
   exit 1
 fi
 
+tools_dir=$(dirname $0)
 executable_name=$(basename $0)
 
 log() {
