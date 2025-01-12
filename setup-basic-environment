@@ -27,12 +27,7 @@ else
   cp -r $path_to_cmdline_tools android/cmdline-tools
 fi
 
-if [ -d android/licenses ]; then
-  log "licenses already accepted, skipping"
-else
-  log "Accepting licenses"
-  yes | sdkmanager --licenses > /dev/null 2>&1
-fi
+$(dirname $0)/accept-android-licenses
 
 # Contains adb for installing APKs, debugging, etc.
 if [ -d android/platform-tools ]; then

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Defines executable_name, sdk_manager and log
+source $(dirname $0)/lib/common.sh
+
+log "Accepting licenses"
+yes | sdkmanager --licenses > /dev/null 2>&1
