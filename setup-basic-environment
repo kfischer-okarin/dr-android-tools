@@ -1,0 +1,76 @@
+#!/bin/sh
+
+set -e
+
+BUNDLETOOL_VERSION=1.17.2
+BUILD_TOOLS_VERSION=30.0.0
+
+cd $(dirname $0)/..
+
+if [ ! -f ./dragonruby ]; then
+  echo "Please place dr-android-tools in the root of a DragonRuby root directory"
+  echo "in order for all the scripts to work correctly."
+  exit 1
+fi
+
+path_to_cmdline_tools=$1
+
+executable_name=$(basename $0)
+
+if [ -z "$path_to_cmdline_tools" ]; then
+  echo "Usage: $executable_name <path-to-cmdline-tools>"
+  echo
+  echo "This script installs the necessary Android SDK components for DragonRuby."
+  echo
+  echo "Download the command line tools from https://developer.android.com/studio#command-line-tools-only"
+  echo "and extract them to a directory. Then run this script with the path to the directory."
+  exit 1
+fi
+
+log() {
+  # Green text
+  printf "\e[32m[$executable_name]\e[0m $1\n"
+}
+
+mkdir -p android
+
+if [ -d android/cmdline-tools ]; then
+  log "cmdline-tools already exists, skipping copy"
+else
+  log "Copying cmdline-tools to android/cmdline-tools"
+  cp -r $path_to_cmdline_tools android/cmdline-tools
+fi
+
+sdkmanager="./android/cmdline-tools/latest/bin/sdkmanager"
+
+if [ -d android/licenses ]; then
+  log "licenses already accepted, skipping"
+else
+  log "Accepting licenses"
+  yes | $sdkmanager --sdk_root=android --licenses > /dev/null 2>&1
+fi
+
+# Contains adb for installing APKs, debugging, etc.
+if [ -d android/platform-tools ]; then
+  log "platform-tools already exists, skipping download"
+else
+  log "Installing Platform Tools"
+  $sdkmanager --sdk_root=android --install 'platform-tools'
+fi
+
+# For extracting APKs from aab files
+if [ -f android/bundletool.jar ]; then
+  log "bundletool already exists, skipping download"
+else
+  log "Installing bundletool $BUNDLETOOL_VERSION"
+  curl -L -o android/bundletool.jar \
+       https://github.com/google/bundletool/releases/download/$BUNDLETOOL_VERSION/bundletool-all-$BUNDLETOOL_VERSION.jar
+fi
+
+# Contains apksigner for signing APKs
+if [ -d android/build-tools ]; then
+  log "build-tools already exists, skipping download"
+else
+  log "Installing Build Tools $BUILD_TOOLS_VERSION"
+  $sdkmanager --sdk_root=android --install "build-tools;$BUILD_TOOLS_VERSION"
+fi
