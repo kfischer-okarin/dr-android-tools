@@ -31,7 +31,7 @@ if [ -d android/licenses ]; then
   log "licenses already accepted, skipping"
 else
   log "Accepting licenses"
-  yes | $sdkmanager --sdk_root=android --licenses > /dev/null 2>&1
+  yes | sdkmanager --licenses > /dev/null 2>&1
 fi
 
 # Contains adb for installing APKs, debugging, etc.
@@ -39,7 +39,7 @@ if [ -d android/platform-tools ]; then
   log "platform-tools already exists, skipping download"
 else
   log "Installing Platform Tools"
-  $sdkmanager --sdk_root=android --install 'platform-tools'
+  sdkmanager --install 'platform-tools'
 fi
 
 # For extracting APKs from aab files
@@ -56,5 +56,5 @@ if [ -d android/build-tools ]; then
   log "build-tools already exists, skipping download"
 else
   log "Installing Build Tools $BUILD_TOOLS_VERSION"
-  $sdkmanager --sdk_root=android --install "build-tools;$BUILD_TOOLS_VERSION"
+  sdkmanager --install "build-tools;$BUILD_TOOLS_VERSION"
 fi

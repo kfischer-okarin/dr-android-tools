@@ -17,4 +17,6 @@ log() {
   printf "\e[32m[$executable_name]\e[0m $1\n"
 }
 
-sdkmanager="./android/cmdline-tools/latest/bin/sdkmanager"
+sdkmanager() {
+  ./android/cmdline-tools/latest/bin/sdkmanager --sdk_root=./android $@
+}
