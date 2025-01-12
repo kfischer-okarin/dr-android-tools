@@ -1,21 +1,12 @@
 #!/bin/sh
 
-set -e
+# Defines executable_name and log
+source $(dirname $0)/lib/common.sh
 
 BUNDLETOOL_VERSION=1.17.2
 BUILD_TOOLS_VERSION=30.0.0
 
-cd $(dirname $0)/..
-
-if [ ! -f ./dragonruby ]; then
-  echo "Please place dr-android-tools in the root of a DragonRuby root directory"
-  echo "in order for all the scripts to work correctly."
-  exit 1
-fi
-
 path_to_cmdline_tools=$1
-
-executable_name=$(basename $0)
 
 if [ -z "$path_to_cmdline_tools" ]; then
   echo "Usage: $executable_name <path-to-cmdline-tools>"
@@ -26,11 +17,6 @@ if [ -z "$path_to_cmdline_tools" ]; then
   echo "and extract them to a directory. Then run this script with the path to the directory."
   exit 1
 fi
-
-log() {
-  # Green text
-  printf "\e[32m[$executable_name]\e[0m $1\n"
-}
 
 mkdir -p android
 
