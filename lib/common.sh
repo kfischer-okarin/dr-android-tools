@@ -18,6 +18,27 @@ log() {
   printf "\e[32m[$executable_name]\e[0m $1\n"
 }
 
+get_metadata() {
+  metadata_key=$1
+
+  metadata_line=$(grep "^$metadata_key=" mygame/metadata/game_metadata.txt || true)
+
+  if [ -z "$metadata_line" ]; then
+    echo "Metadata key '$metadata_key' not found"
+    exit 1
+  fi
+
+  echo $metadata_line | cut -d = -f 2
+}
+
 sdkmanager() {
   ./android/cmdline-tools/latest/bin/sdkmanager --sdk_root=./android $@
+}
+
+apksigner() {
+  ./android/cmdline-tools/latest/build-tools/$BUILD_TOOLS_VERSION/apksigner $@
+}
+
+adb() {
+  ./android/platform-tools/adb $@
 }

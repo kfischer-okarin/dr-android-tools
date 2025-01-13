@@ -1,0 +1,44 @@
+#!/bin/bash
+
+source $(dirname $0)/lib/common.sh
+
+DEV_KEYSTORE_PATH=./android/dev_keystore.jks
+DEV_KEYSTORE_PASSWORD=mygame
+
+if [ ! -f $dev_keystore_path ]; then
+  log "Generating dev keystore..."
+  keytool -genkeypair -v \
+          -keystore $DEV_KEYSTORE_PATH \
+          -keyalg RSA \
+          -keysize 2048 \
+          -validity 10000 \
+          -alias mygame \
+          -storepass $DEV_KEYSTORE_PASSWORD \
+          -dname "CN=mygame, OU=mygame, O=mygame, L=mygame, S=mygame, C=us"
+fi
+
+gameid=$(get_metadata gameid)
+packageid=$(get_metadata packageid)
+
+./dragonruby-publish --package --platforms=googleplay
+
+java -jar ./android/bundletool.jar build-apks \
+     --bundle=./builds/$gameid-googleplay.aab \
+     --output=./builds/app.apks \
+     --mode=universal
+
+mv ./builds/app.apks ./builds/app.zip
+rm -rf ./builds/tmp
+mkdir ./builds/tmp
+unzip ./builds/app.zip -d ./builds/tmp
+
+apksigner sign \
+          --ks $DEV_KEYSTORE_PATH \
+          --min-sdk-version 26 \
+          --ks-pass pass:$DEV_KEYSTORE_PASSWORD \
+          ./builds/tmp/universal.apk
+
+adb shell am force-stop $packageid
+adb uninstall $packageid || true # In case the app was never installed
+adb install ./builds/tmp/universal.apk
+adb shell am start -n $packageid/$packageid.DragonRubyActivity
