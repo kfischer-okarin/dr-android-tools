@@ -1,0 +1,28 @@
+#!/bin/bash
+
+source $(dirname $0)/lib/common.sh
+
+print_usage() {
+  echo "Usage: $executable_name [<game-directory>]"
+  echo
+  echo "Copy the default Android manifest file to the game metadata directory."
+  echo
+  echo "If <game-directory> is not specified, 'mygame' is used."
+}
+
+if [[ $1 == "--help" ]]; then
+  print_usage
+  exit
+fi
+
+game_directory=${1:-mygame}
+
+target_path="$game_directory/metadata/googleplay-manifest.xml"
+
+if [[ -f $target_path ]]; then
+  echo "The manifest file '$target_path' already exists."
+  exit 1
+fi
+
+log "Copying the default Android manifest file to '$target_path'..."
+cp ./.dragonruby/stubs/googleplay/DragonRubyManifest.xml $target_path
