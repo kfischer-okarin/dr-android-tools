@@ -1,7 +1,6 @@
 #!/bin/sh
 
 source $(dirname $0)/lib/common.sh
-source $(dirname $0)/lib/tool_versions.sh
 
 if [ ! -d android ]; then
   log "android directory not found, please execute setup-basic-environment first"

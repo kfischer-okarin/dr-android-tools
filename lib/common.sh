@@ -42,3 +42,5 @@ apksigner() {
 adb() {
   ./android/platform-tools/adb $@
 }
+
+source $tools_dir/lib/tool_versions.sh
