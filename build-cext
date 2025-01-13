@@ -2,11 +2,26 @@
 
 source $(dirname $0)/lib/common.sh
 
+print_usage() {
+  echo "Usage: $executable_name <path-to-extension> [<game-directory>]"
+  echo
+  echo "Builds the C extension at <path-to-extension> and installs it in the specified game directory."
+  echo
+  echo "If <game-directory> is not specified, 'mygame' is used."
+}
+
+if [[ $1 == "--help" ]]; then
+  print_usage
+  exit
+fi
+
 path_to_extension=$1
 game_directory=${2:-mygame}
 
 if [ -z $path_to_extension ]; then
-  echo "Usage: $0 <path-to-extension> [<game-directory>]" >&2
+  echo "Error: <path-to-extension> is required" >&2
+  echo >&2g
+  print_usage
   exit 1
 fi
 
