@@ -1,6 +1,0 @@
-#!/bin/sh
-
-source $(dirname $0)/lib/common.sh
-
-log "Accepting licenses"
-yes | sdkmanager --licenses > /dev/null 2>&1

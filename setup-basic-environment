@@ -46,7 +46,8 @@ else
   cp -r $path_to_cmdline_tools android/cmdline-tools
 fi
 
-$tools_dir/accept-android-licenses
+log "Accepting licenses"
+yes | sdkmanager --licenses > /dev/null 2>&1
 
 # Contains adb for installing APKs, debugging, etc.
 if [ -d android/platform-tools ]; then
