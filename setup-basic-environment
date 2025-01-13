@@ -54,6 +54,11 @@ if ! java -version > /dev/null 2>&1; then
   exit 1
 fi
 
+if ! grep "./android" .gitignore > /dev/null; then
+  log "Adding android/ to .gitignore"
+  echo "./android" >> .gitignore
+fi
+
 mkdir -p android
 
 if [ -d android/cmdline-tools ]; then
