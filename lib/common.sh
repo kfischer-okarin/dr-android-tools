@@ -19,12 +19,25 @@ log() {
 }
 
 get_metadata() {
-  metadata_key=$1
+  game_directory=$1
+  metadata_key=$2
 
-  metadata_line=$(grep "^$metadata_key=" mygame/metadata/game_metadata.txt || true)
+  if [ ! -d $game_directory ]; then
+    echo "Game directory '$game_directory' not found"
+    exit 1
+  fi
+
+  metadata_file=$game_directory/metadata/game_metadata.txt
+
+  if [ ! -f $metadata_file ]; then
+    echo "Game metadata file '$metadata_file' not found"
+    exit 1
+  fi
+
+  metadata_line=$(grep "^$metadata_key=" $metadata_file || true)
 
   if [ -z "$metadata_line" ]; then
-    echo "Metadata key '$metadata_key' not found"
+    echo "Metadata key '$metadata_key' not found in '$metadata_file'"
     exit 1
   fi
 

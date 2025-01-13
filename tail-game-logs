@@ -2,12 +2,22 @@
 
 source $(dirname $0)/lib/common.sh
 
-packageid=$(get_metadata packageid)
+if [[ $1 == "--help" ]]; then
+  echo "Usage: $executable_name [<game-directory>]"
+  echo "Show logcat output for the running game."
+  echo "If <game-directory> is not specified, the mygame is used."
+  echo "Use the ANDROID_SERIAL environment variable to specify the device if there are multiple devices connected."
+  exit
+fi
+
+game_directory=${1:-mygame}
+
+packageid=$(get_metadata $game_directory packageid)
 
 game_pid=$(adb shell pidof -s $packageid || true)
 
 if [[ -z "$game_pid" ]]; then
-  echo "Game is not running"
+  echo "Game '$packageid' is not running."
   exit 1
 fi
 

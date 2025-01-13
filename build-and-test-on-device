@@ -2,6 +2,16 @@
 
 source $(dirname $0)/lib/common.sh
 
+if [[ $1 == "--help" ]]; then
+  echo "Usage: $executable_name [<game-directory>]"
+  echo "Builds and installs the game on a connected Android device."
+  echo "If <game-directory> is not specified, the mygame is used."
+  echo "Use the ANDROID_SERIAL environment variable to specify the device if there are multiple devices connected."
+  exit
+fi
+
+game_directory=${1:-mygame}
+
 DEV_KEYSTORE_PATH=./android/dev_keystore.jks
 DEV_KEYSTORE_PASSWORD=mygame
 
@@ -17,10 +27,10 @@ if [ ! -f $DEV_KEYSTORE_PATH ]; then
           -dname "CN=mygame, OU=mygame, O=mygame, L=mygame, S=mygame, C=us"
 fi
 
-gameid=$(get_metadata gameid)
-packageid=$(get_metadata packageid)
+gameid=$(get_metadata $game_directory gameid)
+packageid=$(get_metadata $game_directory packageid)
 
-./dragonruby-publish --package --platforms=googleplay
+./dragonruby-publish --package --platforms=googleplay $game_directory
 
 java -jar ./android/bundletool.jar build-apks \
      --bundle=./builds/$gameid-googleplay.aab \
@@ -43,4 +53,4 @@ adb uninstall $packageid || true # In case the app was never installed
 adb install ./builds/tmp/universal.apk
 adb shell am start -n $packageid/$packageid.DragonRubyActivity
 
-$tools_dir/tail-game-logs
+$tools_dir/tail-game-logs $game_directory
