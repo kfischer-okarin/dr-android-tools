@@ -42,3 +42,5 @@ adb shell am force-stop $packageid
 adb uninstall $packageid || true # In case the app was never installed
 adb install ./builds/tmp/universal.apk
 adb shell am start -n $packageid/$packageid.DragonRubyActivity
+
+$tools_dir/tail-game-logs

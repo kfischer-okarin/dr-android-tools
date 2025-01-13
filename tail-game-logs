@@ -1,0 +1,14 @@
+#!/bin/bash
+
+source $(dirname $0)/lib/common.sh
+
+packageid=$(get_metadata packageid)
+
+game_pid=$(adb shell pidof -s $packageid || true)
+
+if [[ -z "$game_pid" ]]; then
+  echo "Game is not running"
+  exit 1
+fi
+
+adb logcat --pid=$game_pid
