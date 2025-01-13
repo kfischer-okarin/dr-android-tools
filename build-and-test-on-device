@@ -3,15 +3,21 @@
 source $(dirname $0)/lib/common.sh
 
 game_directory="mygame"
+min_sdk_version="26"
 
 while [[ $# -gt 0 ]]; do
   case $1 in
     --help)
-      echo "Usage: $executable_name [<game-directory>]"
+      echo "Usage: $executable_name [<game-directory>] [--min-sdk-version <min-sdk-version>]"
       echo "Builds and installs the game on a connected Android device."
       echo "If <game-directory> is not specified, the mygame is used."
       echo "Use the ANDROID_SERIAL environment variable to specify the device if there are multiple devices connected."
       exit
+      ;;
+    --min-sdk-version)
+      min_sdk_version=$2
+      shift
+      shift
       ;;
     *)
       game_directory=$1
@@ -52,7 +58,7 @@ unzip ./builds/app.zip -d ./builds/tmp
 
 apksigner sign \
           --ks $DEV_KEYSTORE_PATH \
-          --min-sdk-version 26 \
+          --min-sdk-version $min_sdk_version \
           --ks-pass pass:$DEV_KEYSTORE_PASSWORD \
           ./builds/tmp/universal.apk
 
