@@ -2,31 +2,31 @@
 
 source $(dirname $0)/lib/common.sh
 
-game_directory="mygame"
-min_sdk_version="26"
+print_usage() {
+  echo "Usage: $executable_name [<game-directory>]"
+  echo
+  echo "Builds and installs the game on a connected Android device."
+  echo
+  echo "If <game-directory> is not specified, 'mygame' is used."
+  echo "Use the ANDROID_SERIAL environment variable to specify the device if there are multiple devices connected."
+}
 
-while [[ $# -gt 0 ]]; do
-  case $1 in
-    --help)
-      echo "Usage: $executable_name [<game-directory>] [--min-sdk-version <min-sdk-version>]"
-      echo
-      echo "Builds and installs the game on a connected Android device."
-      echo
-      echo "If <game-directory> is not specified, 'mygame' is used."
-      echo "Use the ANDROID_SERIAL environment variable to specify the device if there are multiple devices connected."
-      exit
-      ;;
-    --min-sdk-version)
-      min_sdk_version=$2
-      shift
-      shift
-      ;;
-    *)
-      game_directory=$1
-      shift
-      ;;
-  esac
-done
+if [ "$1" == "--help" ]; then
+  print_usage
+  exit
+fi
+
+determine_min_sdk_version() {
+  manifest_file="$game_directory/metadata/googleplay-manifest.xml"
+  if [ -f $manifest_file ]; then
+    grep -o "android:minSdkVersion=\"[0-9]*\"" $manifest_file | grep -o "[0-9]*"
+  else
+    echo "26"
+  fi
+}
+
+game_directory=${1:-mygame}
+min_sdk_version=$(determine_min_sdk_version)
 
 DEV_KEYSTORE_PATH=./android/dev_keystore.jks
 DEV_KEYSTORE_PASSWORD=mygame
@@ -48,6 +48,7 @@ packageid=$(get_metadata $game_directory packageid)
 
 ./dragonruby-publish --package --platforms=googleplay $game_directory
 
+log "Extracting the APKs from the AAB file"
 java -jar ./android/bundletool.jar build-apks \
      --bundle=./builds/$gameid-googleplay.aab \
      --output=./builds/app.apks \
@@ -58,12 +59,14 @@ rm -rf ./builds/tmp
 mkdir ./builds/tmp
 unzip ./builds/app.zip -d ./builds/tmp
 
+log "Signing the APK for minSdkVersion $min_sdk_version"
 apksigner sign \
           --ks $DEV_KEYSTORE_PATH \
           --min-sdk-version $min_sdk_version \
           --ks-pass pass:$DEV_KEYSTORE_PASSWORD \
           ./builds/tmp/universal.apk
 
+log "Installing the APK on the device and restarting the app"
 adb shell am force-stop $packageid
 adb uninstall $packageid || true # In case the app was never installed
 adb install ./builds/tmp/universal.apk
