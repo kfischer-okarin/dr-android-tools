@@ -1,0 +1,38 @@
+#!/bin/bash
+
+source $(dirname $0)/lib/common.sh
+
+path_to_extension=$1
+game_directory=${2:-mygame}
+
+if [ -z $path_to_extension ]; then
+  echo "Usage: $0 <path-to-extension> [<game-directory>]" >&2
+  exit 1
+fi
+
+clang() {
+  if [ $(uname) = "Darwin" ]; then
+    ndk_platform="darwin-x86_64"
+  elif [ $(uname) = "Linux" ]; then
+    ndk_platform="linux-x86_64"
+  else
+    echo "Unsupported platform: $(uname)" >&2
+    exit 1
+  fi
+
+  ndk_llvm_path="./android/ndk/$NDK_VERSION/toolchains/llvm/prebuilt/$ndk_platform"
+  $ndk_llvm_path/bin/aarch64-linux-android33-clang --sysroot=$ndk_llvm_path/sysroot $@
+}
+
+output_path="./$game_directory/native/googleplay-arm64"
+mkdir -p $output_path
+
+extension_name=$(basename -s .c $path_to_extension)
+
+log "Compiling '$path_to_extension' to '$output_path/$extension_name.so'"
+clang -shared \
+      -Wl,-undefined -Wl,dynamic_lookup \
+      -fPIC \
+      -I ./include \
+      $path_to_extension \
+      -o $output_path/$extension_name.so
