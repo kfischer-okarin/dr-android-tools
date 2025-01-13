@@ -36,7 +36,7 @@ sdkmanager() {
 }
 
 apksigner() {
-  ./android/cmdline-tools/latest/build-tools/$BUILD_TOOLS_VERSION/apksigner $@
+  ./android/build-tools/$BUILD_TOOLS_VERSION/apksigner $@
 }
 
 adb() {

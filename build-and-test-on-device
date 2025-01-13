@@ -5,8 +5,8 @@ source $(dirname $0)/lib/common.sh
 DEV_KEYSTORE_PATH=./android/dev_keystore.jks
 DEV_KEYSTORE_PASSWORD=mygame
 
-if [ ! -f $dev_keystore_path ]; then
-  log "Generating dev keystore..."
+if [ ! -f $DEV_KEYSTORE_PATH ]; then
+  log "Generating dev keystore at $DEV_KEYSTORE_PATH"
   keytool -genkeypair -v \
           -keystore $DEV_KEYSTORE_PATH \
           -keyalg RSA \
