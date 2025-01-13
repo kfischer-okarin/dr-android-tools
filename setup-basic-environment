@@ -9,6 +9,25 @@ DEFAULT_SDK_ROOT_CANDIDATES=(
   '$HOME/Android/Sdk' # Linux default
 )
 
+print_usage() {
+  echo "Usage: $executable_name [<path-to-cmdline-tools>]"
+  echo
+  echo "This script installs the necessary Android SDK components for DragonRuby."
+  echo
+  echo "The script tries to find the command line tools in the following directories:"
+  for candidate in "${DEFAULT_SDK_ROOT_CANDIDATES[@]}"; do
+    echo "  - $candidate"
+  done
+  echo
+  echo "You can also specify the path to the command line tools as an argument."
+  echo "You have to do this if the command line tools are not in one of the default directories."
+}
+
+if [ "$1" == "--help" ]; then
+  print_usage
+  exit
+fi
+
 default_path_to_cmdline_tools() {
   for candidate in "${DEFAULT_SDK_ROOT_CANDIDATES[@]}"; do
     candidate=$(eval echo $candidate)
@@ -22,18 +41,10 @@ default_path_to_cmdline_tools() {
 
 path_to_cmdline_tools=${1:-$(default_path_to_cmdline_tools)}
 
-if [[ -z "$path_to_cmdline_tools" || "$1" == "--help" ]]; then
-  echo "Usage: $executable_name [<path-to-cmdline-tools>]"
-  echo
-  echo "This script installs the necessary Android SDK components for DragonRuby."
-  echo
-  echo "The script tries to find the command line tools in the following directories:"
-  for candidate in "${DEFAULT_SDK_ROOT_CANDIDATES[@]}"; do
-    echo "  - $candidate"
-  done
-  echo
-  echo "You can also specify the path to the command line tools as an argument."
-  echo "You have to do this if the command line tools are not in one of the default directories."
+if [[ -z "$path_to_cmdline_tools" ]]; then
+  echo "Error: Could not find the command line tools. Please specify the path to the command line tools." >&2
+  echo >&2
+  print_usage
   exit 1
 fi
 

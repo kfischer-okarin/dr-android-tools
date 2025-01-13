@@ -4,8 +4,10 @@ source $(dirname $0)/lib/common.sh
 
 if [[ $1 == "--help" ]]; then
   echo "Usage: $executable_name [<game-directory>]"
+  echo
   echo "Show logcat output for the running game."
-  echo "If <game-directory> is not specified, the mygame is used."
+  echo
+  echo "If <game-directory> is not specified, 'mygame' is used."
   echo "Use the ANDROID_SERIAL environment variable to specify the device if there are multiple devices connected."
   exit
 fi
