@@ -1,17 +1,40 @@
-#!/bin/sh
+#!/bin/bash
 
 source $(dirname $0)/lib/common.sh
 source $(dirname $0)/lib/tool_versions.sh
 
-path_to_cmdline_tools=$1
+# Unevaluated strings so we can print them in the help message
+DEFAULT_SDK_ROOT_CANDIDATES=(
+  '$ANDROID_HOME' # Prefer the ANDROID_HOME environment variable
+  '$HOME/Library/Android/sdk' # macOS default
+  '$HOME/Android/Sdk' # Linux default
+)
 
-if [ -z "$path_to_cmdline_tools" ]; then
-  echo "Usage: $executable_name <path-to-cmdline-tools>"
+default_path_to_cmdline_tools() {
+  for candidate in "${DEFAULT_SDK_ROOT_CANDIDATES[@]}"; do
+    candidate=$(eval echo $candidate)
+    if [[ -n "$candidate" && -d "$candidate/cmdline-tools" ]]; then
+      echo "$candidate/cmdline-tools"
+      return
+    fi
+  done
+  echo ""
+}
+
+path_to_cmdline_tools=${1:-$(default_path_to_cmdline_tools)}
+
+if [[ -z "$path_to_cmdline_tools" || "$1" == "--help" ]]; then
+  echo "Usage: $executable_name [<path-to-cmdline-tools>]"
   echo
   echo "This script installs the necessary Android SDK components for DragonRuby."
   echo
-  echo "Download the command line tools from https://developer.android.com/studio#command-line-tools-only"
-  echo "and extract them to a directory. Then run this script with the path to the directory."
+  echo "The script tries to find the command line tools in the following directories:"
+  for candidate in "${DEFAULT_SDK_ROOT_CANDIDATES[@]}"; do
+    echo "  - $candidate"
+  done
+  echo
+  echo "You can also specify the path to the command line tools as an argument."
+  echo "You have to do this if the command line tools are not in one of the default directories."
   exit 1
 fi
 
@@ -20,7 +43,7 @@ mkdir -p android
 if [ -d android/cmdline-tools ]; then
   log "cmdline-tools already exists, skipping copy"
 else
-  log "Copying cmdline-tools to android/cmdline-tools"
+  log "Copying cmdline-tools from $path_to_cmdline_tools to android/cmdline-tools"
   cp -r $path_to_cmdline_tools android/cmdline-tools
 fi
 
