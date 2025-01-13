@@ -9,8 +9,10 @@ while [[ $# -gt 0 ]]; do
   case $1 in
     --help)
       echo "Usage: $executable_name [<game-directory>] [--min-sdk-version <min-sdk-version>]"
+      echo
       echo "Builds and installs the game on a connected Android device."
-      echo "If <game-directory> is not specified, the mygame is used."
+      echo
+      echo "If <game-directory> is not specified, 'mygame' is used."
       echo "Use the ANDROID_SERIAL environment variable to specify the device if there are multiple devices connected."
       exit
       ;;
