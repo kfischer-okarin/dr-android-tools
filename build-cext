@@ -36,18 +36,29 @@ clang() {
   fi
 
   ndk_llvm_path="./android/ndk/$NDK_VERSION/toolchains/llvm/prebuilt/$ndk_platform"
-  $ndk_llvm_path/bin/aarch64-linux-android33-clang --sysroot=$ndk_llvm_path/sysroot $@
+  $ndk_llvm_path/bin/clang --sysroot=$ndk_llvm_path/sysroot $@
 }
-
-output_path="./$game_directory/native/googleplay-arm64"
-mkdir -p $output_path
 
 extension_name=$(basename -s .c $path_to_extension)
 
-log "Compiling '$path_to_extension' to '$output_path/$extension_name.so'"
-clang -shared \
-      -Wl,-undefined -Wl,dynamic_lookup \
-      -fPIC \
-      -I ./include \
-      $path_to_extension \
-      -o $output_path/$extension_name.so
+TARGETS=(
+  "arm64,aarch64-linux-android33"
+  "arm32,armv7a-linux-androideabi33"
+)
+
+for target in "${TARGETS[@]}"; do
+  IFS=',' read -r dr_target clang_target <<< "$target"
+
+  output_path="./$game_directory/native/googleplay-$dr_target"
+  mkdir -p $output_path
+
+  log "Compiling '$path_to_extension' to '$output_path/$extension_name.so'"
+
+  clang -shared \
+        -target $clang_target \
+        -Wl,-undefined -Wl,dynamic_lookup \
+        -fPIC \
+        -I ./include \
+        $path_to_extension \
+        -o $output_path/$extension_name.so
+done
