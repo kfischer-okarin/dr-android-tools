@@ -33,14 +33,10 @@ DEV_KEYSTORE_PASSWORD=mygame
 
 if [ ! -f $DEV_KEYSTORE_PATH ]; then
   log "Generating dev keystore at $DEV_KEYSTORE_PATH"
-  keytool -genkeypair -v \
-          -keystore $DEV_KEYSTORE_PATH \
-          -keyalg RSA \
-          -keysize 2048 \
-          -validity 10000 \
-          -alias mygame \
-          -storepass $DEV_KEYSTORE_PASSWORD \
-          -dname "CN=mygame, OU=mygame, O=mygame, L=mygame, S=mygame, C=us"
+  $tools_dir/generate-keystore $DEV_KEYSTORE_PATH \
+                               -alias mygame \
+                               -storepass $DEV_KEYSTORE_PASSWORD \
+                               -dname "CN=mygame, OU=mygame, O=mygame, L=mygame, S=mygame, C=us"
 fi
 
 gameid=$(get_metadata $game_directory gameid)
