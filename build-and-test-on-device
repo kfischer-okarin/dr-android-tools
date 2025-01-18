@@ -16,17 +16,7 @@ if [ "$1" == "--help" ]; then
   exit
 fi
 
-determine_min_sdk_version() {
-  manifest_file="$game_directory/metadata/googleplay-manifest.xml"
-  if [ -f $manifest_file ]; then
-    grep -o "android:minSdkVersion=\"[0-9]*\"" $manifest_file | grep -o "[0-9]*"
-  else
-    echo "26"
-  fi
-}
-
 game_directory=${1:-mygame}
-min_sdk_version=$(determine_min_sdk_version)
 
 DEV_KEYSTORE_PATH=./android/dev_keystore.jks
 DEV_KEYSTORE_PASSWORD=mygame
@@ -55,10 +45,9 @@ rm -rf ./builds/tmp
 mkdir ./builds/tmp
 unzip ./builds/app.zip -d ./builds/tmp
 
-log "Signing the APK for minSdkVersion $min_sdk_version"
+log "Signing the APK"
 apksigner sign \
           --ks $DEV_KEYSTORE_PATH \
-          --min-sdk-version $min_sdk_version \
           --ks-pass pass:$DEV_KEYSTORE_PASSWORD \
           ./builds/tmp/universal.apk
 
