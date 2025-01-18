@@ -1,0 +1,42 @@
+#!/bin/bash
+
+source $(dirname $0)/lib/common.sh
+
+print_usage() {
+  echo "Usage: $executable_name <keystore path> [<game directory>]"
+  echo
+  echo "Builds and signs the APK for the Google Play Store."
+  echo "The password for the keystore is expected to be in a file with the same name"
+  echo "as the keystore but with a .pass extension."
+}
+
+if [ "$1" == "--help" ]; then
+  print_usage
+  exit 0
+fi
+
+keystore_path=$1
+game_directory=${2:-mygame}
+
+gameid=$(get_metadata $game_directory gameid)
+packageid=$(get_metadata $game_directory packageid)
+
+./dragonruby-publish --package --platforms=googleplay $game_directory
+
+log "Extracting the APKs from the AAB file"
+java -jar ./android/bundletool.jar build-apks \
+     --bundle=./builds/$gameid-googleplay.aab \
+     --output=./builds/app.apks \
+     --mode=universal
+
+mv ./builds/app.apks ./builds/app.zip
+rm -rf ./builds/tmp
+mkdir ./builds/tmp
+unzip ./builds/app.zip -d ./builds/tmp
+
+apksigner sign \
+          --ks $keystore_path \
+          --ks-pass file:$keystore_path.pass \
+          ./builds/tmp/universal.apk
+
+mv ./builds/tmp/universal.apk ./builds/$gameid-signed.apk
