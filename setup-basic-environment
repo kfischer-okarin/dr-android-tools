@@ -12,15 +12,27 @@ DEFAULT_SDK_ROOT_CANDIDATES=(
 print_usage() {
   echo "Usage: $executable_name [<path-to-cmdline-tools>]"
   echo
-  echo "This script installs the necessary Android SDK components for DragonRuby."
+  echo "This script installs the necessary Android SDK components for DragonRuby development."
+  echo "It tries to locate the Android command line tools automatically, but you can specify the path manually if needed."
   echo
-  echo "The script tries to find the command line tools in the following directories:"
+  echo "Arguments:"
+  echo "  <path-to-cmdline-tools>  (optional) Specify the directory containing the Android SDK command line tools."
+  echo
+  echo "Default behavior:"
+  echo "  If no path is provided, the script searches for the command line tools in the following locations:"
   for candidate in "${DEFAULT_SDK_ROOT_CANDIDATES[@]}"; do
-    echo "  - $candidate"
+    echo "    - $candidate"
   done
   echo
-  echo "You can also specify the path to the command line tools as an argument."
-  echo "You have to do this if the command line tools are not in one of the default directories."
+  echo "Examples:"
+  echo "  $executable_name                # Use default search paths to locate the command line tools."
+  echo "  $executable_name /custom/path   # Specify a custom path to the command line tools."
+  echo
+  echo "Notes:"
+  echo "  - The script requires Java to be installed and available in your PATH."
+  echo "  - If the tools are not found, you will need to provide the correct path manually."
+  echo
+  echo "Run '$executable_name --help' to display this message."
 }
 
 if [ "$1" == "--help" ]; then
