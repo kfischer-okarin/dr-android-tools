@@ -5,9 +5,17 @@ source $(dirname $0)/lib/common.sh
 print_usage() {
   echo "Usage: $executable_name <path-to-extension> [<game-directory>]"
   echo
-  echo "Builds the C extension at <path-to-extension> and installs it in the specified game directory."
+  echo "This script builds the C extension at <path-to-extension> and installs it in the specified game directory."
   echo
-  echo "If <game-directory> is not specified, 'mygame' is used."
+  echo "Arguments:"
+  echo "  <path-to-extension>  The path to the C extension source file."
+  echo "  <game-directory>     The directory of the game to install the extension. Defaults to 'mygame' if not specified."
+  echo
+  echo "Notes:"
+  echo "  - The script requires the 'android' directory to be present. Please run 'setup-basic-environment' first."
+  echo "  - The script requires the Android NDK to be installed. Please run 'setup-cext-environment' first."
+  echo
+  echo "Run '$executable_name --help' to display this message."
 }
 
 if [[ $1 == "--help" ]]; then
@@ -20,7 +28,7 @@ game_directory=${2:-mygame}
 
 if [ -z $path_to_extension ]; then
   echo "Error: <path-to-extension> is required" >&2
-  echo >&2g
+  echo >&2
   print_usage
   exit 1
 fi

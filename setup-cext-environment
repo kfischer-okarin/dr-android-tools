@@ -2,15 +2,25 @@
 
 source $(dirname $0)/lib/common.sh
 
+print_usage() {
+  echo "Usage: $executable_name"
+  echo
+  echo "This script installs the necessary Android SDK and NDK components for C Extension development."
+  echo
+  echo "Notes:"
+  echo "  - The script requires the 'android' directory to be present. Please run 'setup-basic-environment' first."
+  echo "  - The script requires Java to be installed and available in your PATH."
+  echo
+  echo "Run '$executable_name --help' to display this message."
+}
+
 if [ ! -d android ]; then
   log "android directory not found, please execute setup-basic-environment first"
   exit 1
 fi
 
 if [[ $1 == "--help" ]]; then
-  echo "Usage: $executable_name"
-  echo
-  echo "Installs Android SDK and NDK for C Extension development"
+  print_usage
   exit
 fi
 

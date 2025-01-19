@@ -5,10 +5,16 @@ source $(dirname $0)/lib/common.sh
 print_usage() {
   echo "Usage: $executable_name [<game-directory>]"
   echo
-  echo "Builds and installs the game on a connected Android device."
+  echo "This script builds and installs the game on a connected Android device."
   echo
-  echo "If <game-directory> is not specified, 'mygame' is used."
-  echo "Use the ANDROID_SERIAL environment variable to specify the device if there are multiple devices connected."
+  echo "Arguments:"
+  echo "  <game-directory>  The directory of the game to build and install. Defaults to 'mygame' if not specified."
+  echo
+  echo "Notes:"
+  echo "  - The script requires the 'android' directory to be present. Please run 'setup-basic-environment' first."
+  echo "  - The ANDROID_SERIAL environment variable can be used to specify the device if there are multiple devices connected."
+  echo
+  echo "Run '$executable_name --help' to display this message."
 }
 
 if [ "$1" == "--help" ]; then
