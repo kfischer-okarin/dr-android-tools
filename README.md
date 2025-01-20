@@ -41,18 +41,18 @@ Build and install the game on a connected Android device
 
 Specify a custom game directory
 ```sh
-./dr-android-tools/build-and-test-on-device /path/to/game-directory
+./dr-android-tools/build-and-test-on-device my-rpg-game
 ```
 
 ### Build C Extension
 
 Build the C extension and install it in the specified game directory
 ```sh
-./dr-android-tools/build-cext /path/to/extension.c
+./dr-android-tools/build-cext ./path/to/extension.c
 ```
 
 Specify a custom game directory
 ```sh
-./dr-android-tools/build-cext /path/to/extension.c /path/to/game-directory
+./dr-android-tools/build-cext ./path/to/extension.c my-rpg-game
 ```
 
