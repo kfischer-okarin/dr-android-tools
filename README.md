@@ -68,3 +68,15 @@ Specify a custom game directory
 ./dr-android-tools/build-signed-apk /path/to/keystore.jks my-rpg-game
 ```
 
+### Generate Keystore
+
+Generate a new keystore for signing Android apps
+```sh
+./dr-android-tools/generate-keystore /path/to/keystore.jks
+```
+
+Specify additional keytool options
+```sh
+./dr-android-tools/generate-keystore /path/to/keystore.jks -alias mykey -keypass mypass
+```
+
