@@ -7,7 +7,14 @@ print_usage() {
   echo
   echo "Copy the default Android manifest file to the game metadata directory."
   echo
-  echo "If <game-directory> is not specified, 'mygame' is used."
+  echo "Arguments:"
+  echo "  <game-directory>  The directory of the game. Defaults to 'mygame' if not specified."
+  echo
+  echo "Examples:"
+  echo "  $executable_name                # Use the default game directory 'mygame'."
+  echo "  $executable_name rpg            # Use the specified game directory 'rpg'."
+  echo
+  echo "Run '$executable_name --help' to display this message."
 }
 
 if [[ $1 == "--help" ]]; then

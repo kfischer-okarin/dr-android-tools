@@ -80,3 +80,15 @@ Specify additional keytool options
 ./dr-android-tools/generate-keystore /path/to/keystore.jks -alias mykey -keypass mypass
 ```
 
+### Override Android Manifest
+
+Copy the default Android manifest file to the game metadata directory
+```sh
+./dr-android-tools/override-manifest
+```
+
+Specify a custom game directory
+```sh
+./dr-android-tools/override-manifest my-rpg-game
+```
+
