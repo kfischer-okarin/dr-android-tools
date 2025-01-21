@@ -19,76 +19,41 @@ Use command line tools from common installation locations
 ./dr-android-tools/setup-basic-environment
 ```
 
-Specify a custom path to the command line tools
+With a custom path to the command line tools
 
 ```sh
 ./dr-android-tools/setup-basic-environment /custom/path/cmdline-tools
 ```
 
 ### Setup C Extension environment
-
-Install necessary Android SDK and NDK components for C Extension development
 ```sh
 ./dr-android-tools/setup-cext-environment
 ```
 
 ### Build and test on device
-
-Build and install the game on a connected Android device
 ```sh
 ./dr-android-tools/build-and-test-on-device
 ```
 
-Specify a custom game directory
-```sh
-./dr-android-tools/build-and-test-on-device my-rpg-game
-```
-
 ### Build C Extension
 
-Build the C extension and install it in the specified game directory
+Build the C extension add it to your game directory
 ```sh
 ./dr-android-tools/build-cext ./path/to/extension.c
 ```
 
-Specify a custom game directory
-```sh
-./dr-android-tools/build-cext ./path/to/extension.c my-rpg-game
-```
-
 ### Build and sign APK
-
-Build and sign the APK for the Google Play Store
 ```sh
 ./dr-android-tools/build-signed-apk /path/to/keystore.jks
 ```
 
-Specify a custom game directory
-```sh
-./dr-android-tools/build-signed-apk /path/to/keystore.jks my-rpg-game
-```
-
 ### Generate Keystore
-
-Generate a new keystore for signing Android apps
-```sh
-./dr-android-tools/generate-keystore /path/to/keystore.jks
-```
-
-Specify additional keytool options
-```sh
+```zsh
 ./dr-android-tools/generate-keystore /path/to/keystore.jks -alias mykey -keypass mypass
 ```
 
 ### Override Android Manifest
-
 Copy the default Android manifest file to the game metadata directory
 ```sh
 ./dr-android-tools/override-manifest
 ```
-
-Specify a custom game directory
-```sh
-./dr-android-tools/override-manifest my-rpg-game
-```
-
