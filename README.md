@@ -56,3 +56,15 @@ Specify a custom game directory
 ./dr-android-tools/build-cext ./path/to/extension.c my-rpg-game
 ```
 
+### Build and sign APK
+
+Build and sign the APK for the Google Play Store
+```sh
+./dr-android-tools/build-signed-apk /path/to/keystore.jks
+```
+
+Specify a custom game directory
+```sh
+./dr-android-tools/build-signed-apk /path/to/keystore.jks my-rpg-game
+```
+
