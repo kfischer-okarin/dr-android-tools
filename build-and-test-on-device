@@ -3,12 +3,13 @@
 source $(dirname $0)/lib/common.sh
 
 print_usage() {
-  echo "Usage: $executable_name [<game-directory>]"
+  echo "Usage: $executable_name [--force-reinstall] [<game-directory>]"
   echo
   echo "This script builds and installs the game on a connected Android device."
   echo
   echo "Arguments:"
-  echo "  <game-directory>  The directory of the game to build and install. Defaults to 'mygame' if not specified."
+  echo "  --force-reinstall  Uninstall the app before installing the APK."
+  echo "  <game-directory>   The directory of the game to build and install. Defaults to 'mygame' if not specified."
   echo
   echo "Notes:"
   echo "  - The script requires the 'android' directory to be present. Please run 'setup-basic-environment' first."
@@ -17,9 +18,16 @@ print_usage() {
   echo "Run '$executable_name --help' to display this message."
 }
 
+force_reinstall=false
+
 if [ "$1" == "--help" ]; then
   print_usage
   exit
+fi
+
+if [ "$1" == "--force-reinstall" ]; then
+  force_reinstall=true
+  shift
 fi
 
 game_directory=${1:-mygame}
@@ -43,8 +51,13 @@ packageid=$(get_metadata $game_directory packageid)
 
 log "Installing the APK on the device and restarting the app"
 adb shell am force-stop $packageid
-adb uninstall $packageid || true # In case the app was never installed
-adb install ./builds/$gameid-signed.apk
+
+if [ "$force_reinstall" == true ]; then
+  adb uninstall $packageid || true # In case the app was never installed
+  adb install ./builds/$gameid-signed.apk
+else
+  adb install -r ./builds/$gameid-signed.apk
+fi
 adb shell am start -n $packageid/$packageid.DragonRubyActivity
 
 $tools_dir/tail-game-logs $game_directory
