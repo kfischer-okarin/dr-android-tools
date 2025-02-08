@@ -49,15 +49,26 @@ $tools_dir/build-signed-apk $DEV_KEYSTORE_PATH $game_directory
 gameid=$(get_metadata $game_directory gameid)
 packageid=$(get_metadata $game_directory packageid)
 
-log "Installing the APK on the device and restarting the app"
+log "Stopping the app on the device..."
 adb shell am force-stop $packageid
+log "OK"
 
 if [ "$force_reinstall" == true ]; then
+  log "Uninstalling the app from the device"
   adb uninstall $packageid || true # In case the app was never installed
+  log "OK"
+  log "Installing the APK on the device"
   adb install ./builds/$gameid-signed.apk
+  log "OK"
 else
+  log "Reinstalling the APK on the device"
   adb install -r ./builds/$gameid-signed.apk
+  log "OK"
 fi
-adb shell am start -n $packageid/$packageid.DragonRubyActivity
 
+log "Starting the app on the device..."
+adb shell am start -n $packageid/$packageid.DragonRubyActivity
+log "OK"
+
+log "Tailing game logs..."
 $tools_dir/tail-game-logs $game_directory
